@@ -1,0 +1,35 @@
+apiversion: newrelic.com/v1
+kind: NewRelicClusterConfig
+global:
+    licenseKey: 
+    cluster: 
+    namespace: newrelic
+newrelic-infrastructure.privileged:
+    enabled: false
+global.lowDataMode:
+    enabled: true
+kube-state-metrics.image.tag:
+    "'${KSM_IMAGE_VERSION}'"
+kube-state-metrics:
+    # Deploy kube-state-metrics in the cluster.
+    # Set this to true unless it is already deployed.
+    enabled: true
+kubeEvents:
+    # Report Kubernetes events
+    enabled: true
+newrelic-prometheus-agent:
+    # Automatically scrape prometheus metrics for annotated services in the cluster
+    enabled: true
+newrelic-prometheus-agent.lowDataMode:
+    enabled: true
+newrelic-prometheus-agent.config.kubernetes.integrations_filter:
+    enabled: false
+logging.enabled:
+    enabled: true
+newrelic-logging.lowDataMode:
+    # Report logs for containers running in the cluster
+    enabled: true
+newrelic-logging.fluentBit.linuxMountPath:
+    /var/log
+storageClass:
+    enabled: standard-rwx

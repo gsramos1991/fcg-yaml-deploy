@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fcg-game
+  labels:
+    app: fcg-game
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fcg-game
+  template:
+    metadata:
+      labels:
+        app: fcg-game
+    spec:
+      containers:
+        - name: fcg-game
+          image: gsramos/fcg-game:v8
+          ports:
+            - containerPort: 80 # Porta padrão .NET 8
+          
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          envFrom:
+            - secretRef:
+                name: game-env-secret
+            - configMapRef:
+                name: game-env-configmap
+          
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:80"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"      
+            limits:
+              memory: "512Mi" 
+              cpu: "250m"

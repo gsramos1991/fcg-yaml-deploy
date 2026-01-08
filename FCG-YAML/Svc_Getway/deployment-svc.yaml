@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fcg-svc-getway-pagamentos
+  labels:
+    app: fcg-svc-getway-pagamentos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fcg-svc-getway-pagamentos
+  template:
+    metadata:
+      labels:
+        app: fcg-svc-getway-pagamentos
+    spec:
+      containers:
+        - name: fcg-svc-getway-pagamentos
+          image: gsramos/fcg-comunicador:v5
+          envFrom:
+            - configMapRef:
+                name: svc-getway-env-configmap
+            - secretRef:
+                name: svc-getway-env-secret
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"      
+            limits:
+              memory: "512Mi" 
+              cpu: "500m"

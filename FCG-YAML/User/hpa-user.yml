@@ -1,0 +1,32 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-fcg-users
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment 
+    name: fcg-users 
+  minReplicas: 1     
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50 # Escala se CPU > 50%
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 60 # Escala se Memória > 60%
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300 # Janela de 5 min (padrão) para evitar oscilação
+      policies:
+      - type: Percent
+        value: 100 # Permite reduzir todas as réplicas excedentes de uma vez
+        periodSeconds: 15

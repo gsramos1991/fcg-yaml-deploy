@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fcg-users
+  labels:
+    app: fcg-users
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fcg-users
+  template:
+    metadata:
+      labels:
+        app: fcg-users
+    spec:
+      containers:
+        - name: fcg-users
+          image: gsramos/fcg-usuario:v7
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: user-env-secret
+              prefix: "ConnectionStrings__"
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development" 
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"      
+            limits:
+              memory: "512Mi" 
+              cpu: "200m"
